@@ -5,7 +5,7 @@
 
 ## Framework
 * Android架构
-* Android启动
+* [Android启动的方方面面](https://github.com/MickeyQiong/ANote/blob/main/note/Android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2.md)
 * StartActivity流程
 * Binder
 * Handler
