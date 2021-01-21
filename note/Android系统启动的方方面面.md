@@ -42,7 +42,7 @@ Zygote是所有Java进程的父进程，Zygote进程本身是由init进程孵化
 2. 接下来启动binder线程
 3. 最后执行SystemServer().run()，这个run函数里面首先会创建主线程的looper，然后创建上下文，然后分批启动Service（startBootstrapService，startCoreService，startOtherService），最后Looper.loop()。
 > 这里启动的Service指的是系统的服务，但是我们自己也可以创建Service，那么它们有什么区别呢？<br>
-> 可以看这篇文章[Android系统服务和应用服务的区别]
+> 可以看这篇文章[Android系统服务和应用服务的区别](https://github.com/MickeyQiong/ANote/blob/main/note/Android%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%8C%BA%E5%88%AB.md)
 
 ## Launcher的启动
 
