@@ -4,7 +4,7 @@
 下面列一些大致分类列出来：
 
 ## Framework
-* Android架构
+* [Android架构](https://github.com/MickeyQiong/ANote/blob/main/note/Android%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%A7%A3%E6%9E%90.md)
 * [Android启动的方方面面](https://github.com/MickeyQiong/ANote/blob/main/note/Android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E7%9A%84%E6%96%B9%E6%96%B9%E9%9D%A2%E9%9D%A2.md)
 * StartActivity流程
 * Binder

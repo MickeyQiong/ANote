@@ -1,6 +1,6 @@
 想要了解Android平台架构，那么就避免不了一张图片，作为安卓开发都必须见过的一张图片，如下
 
-![Android架构图](https://developer.android.google.cn/guide/platform/images/android-stack_2x.png)
+![Android架构图](https://github.com/MickeyQiong/ANote/blob/main/picture/android-stack_2x.png)
 
 Android是一种基于Linux的开放源代码软件栈，为各类设备和机型而创建。下面我们来解析一下上面图片中的组件。
 
