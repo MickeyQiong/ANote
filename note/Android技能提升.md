@@ -27,7 +27,31 @@ Binder使用过程中3个重要步骤中相应的C端和S端：
 - MessageQueue 在保存 Message 的时候，enqueueMessage方法内部已经加上了同步锁，从而避免了多个线程同时发送消息导致竞态问题。
 - next()方法内部也加上了同步锁，所以也保障了 Looper 分发 Message 的有序性。
 - 最重要的一点是，Looper 总是由一个特定的线程来执行遍历，所以在消费 Message 的时候也不存在竞态。
+
+###  **3、Handler如何发送同步消息**
+
+如果我们在子线程通过Handler向主线程发送了一个消息，希望等到消息执行完毕后子线程才继续运行，这该如何实现？
+
+在这里可以借鉴BlockingRunnable的思想，在Runnable执行完前会通过调用`wait()`方法来使发送者线程转为阻塞等待状态，当任务执行完毕后再通过`notifyAll()`来唤醒发送者线程，从而实现了在Runnable被执行之前发送者线程都会一直处在等待状态。
+
+### 4、Handler如何避免内存泄露
+
+当退出Activity时，如何Handler中还保存着待处理的延时消息的话，那么就会导致内存泄露，此时可以通过调用`Handler.removeCallbacksAndMessages(null)`来移除所有待处理的Message。该方法会将消息队列中所有`Message.obj`等于token的Message均给移除掉，如果token为null的话则会移除所有的Message。
+
+### 5、Message如何复用
+
+因为 Android 系统本身就存在很多事件需要交由 Message 来交付给 mainLooper，所以 Message 的创建是很频繁的。为了减少 Message 频繁重复创建的情况，Message 提供了 MessagePool 用于实现 Message 的缓存复用，以此来优化内存使用
+
+当 Looper 消费了 Message 后会调用`recycleUnchecked()`方法将 Message 进行回收，在清除了各项资源后会缓存到 sPool 变量上，同时将之前缓存的 Message 置为下一个节点 next，通过这种链表结构来缓存最多 50 个Message。这里使用到的是**享元设计模式**
+
+`obtain()`方法则会判断当前是否有可用的缓存，有的话则将 sPool 从链表中移除后返回，否则就返回一个新的 Message 实例。所以我们在发送消息的时候应该尽量通过调用`Message.obtain()`或者`Handler.obtainMessage()`方法来获取 Message 实例
+
+### 6、检测Looper分发Message的效率
+
+Looper 在进行 Loop 循环时，会通过 Observer 向外回调每个 Message 的回调事件。且如果设定了 `slowDispatchThresholdMs` 和 `slowDeliveryThresholdMs` 这两个阈值的话，则会对 Message 的**分发时机**和**分发耗时**进行监测，存在异常情况的话就会打印 Log。该机制可以用于实现应用性能监测，发现潜在的 Message 处理异常情况，但可惜监测方法被系统隐藏了
+
 ## HandlerThread ##
+
 HandlerThread 是 Android SDK 中和 Handler 在同个包下的一个类，从其名字就可以看出来它是一个线程，而且使用到了 Handler其用法类似于以下代码。
 
 通过 HandlerThread 内部的 Looper 对象来初始化 Handler，同时在 Handler 中声明需要执行的耗时任务，主线程通过向 Handler 发送消息来触发 HandlerThread 去执行耗时任务。
